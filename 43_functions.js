@@ -63,8 +63,9 @@ console.log(b);
 
 // Solve ax^2 + bx + c = 0
 function solveQuadratic(a, b, c) {
-	//@TODO
-	return 
+	x1 = (-b+(b**2-4*a*c)**0.5)/(2*a)
+	x2 = (-b-(b**2-4*a*c)**0.5)/(2*a)
+	return x1 === x2 ? [x1] : (isNaN(x1) ? [] : [x1, x2])
 }
 const solutions = solveQuadratic(1, 0, -16) // should return [-4, 4]
 const solution = solveQuadratic(1, -2, 1) // should return [1]
