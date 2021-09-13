@@ -24,8 +24,31 @@
 		</div>
 	</div>
 
+	<div class="quadratic">
+		<h2>Solve quadratic equation</h2>
+		<div>
+			<input class="a" placeholder="a" type="number" size="10"> x^2 +
+			<input class="b" placeholder="b" type="number" size="10"> x +
+			<input class="c" placeholder="c" type="number" size="10"> =
+			<div class="output">&nbsp;</div>
+			<button>Solve</button>
+		</div>
+	</div>
+
+	<div class="temperature">
+		<h2>Convert temperature</h2>
+		<div>
+			<input class="celsius" placeholder="° Celsius" type="number" size="15"> ° C
+			<input class="kelvin" placeholder="° Kelvin" type="number" size="15"> ° K
+			<input class="fahrenheit" placeholder="° Fahrenheit" type="number" size="15"> ° F
+			<button class="submit">Convert</button>
+			<button class="clear">Clear</button>
+		</div>
+	</div>
 
 	<script>
+
+		// Hypotenuse
 
 		const hypotenuseButton = document.querySelector(".hypotenuse button")
 		const hypotenuseOutput = document.querySelector(".hypotenuse .output")
@@ -39,7 +62,54 @@
 			hypotenuseOutput.textContent = c
 		}
 
+		// Quadratic
 
+		const quadraticButton = document.querySelector(".quadratic button")
+		const quadraticOutput = document.querySelector(".quadratic .output")
+
+		quadraticButton.addEventListener("click", showQuadratic)
+
+		function showQuadratic() {
+			const a = Number(document.querySelector(".quadratic input.a").value)
+			const b = Number(document.querySelector(".quadratic input.b").value)
+			const c = Number(document.querySelector(".quadratic input.c").value)
+			const solution = solveQuadratic(a,b,c)
+			quadraticOutput.textContent = solution.toString()
+		}
+
+		// Temperature
+
+		const temperatureSubmitButton = document.querySelector(".temperature button.submit")
+		const temperatureClearButton = document.querySelector(".temperature button.clear")
+		const temperatureCelsius = document.querySelector(".temperature input.celsius")
+		const temperatureKelvin = document.querySelector(".temperature input.kelvin")
+		const temperatureFahrenheit = document.querySelector(".temperature input.fahrenheit")
+
+		temperatureSubmitButton.addEventListener("click", showTemperature)
+		temperatureClearButton.addEventListener("click", clearTemperature)
+
+		function showTemperature() {
+			const celsius = parseFloat(temperatureCelsius.value)
+			const kelvin = parseFloat(temperatureKelvin.value)
+			const fahrenheit = parseFloat(temperatureFahrenheit.value)
+
+			if (!isNaN(celsius) && isNaN(kelvin) && isNaN(fahrenheit)) {
+				temperatureKelvin.value = celsius + 273.15;
+				temperatureFahrenheit.value = celsius * 1.8 + 32;
+			} else if (isNaN(celsius) && !isNaN(kelvin) && isNaN(fahrenheit)) {
+				temperatureCelsius.value = kelvin - 273.15;
+				temperatureFahrenheit.value = (kelvin - 273.15) * 1.8 + 32;
+			} else if (isNaN(celsius) && isNaN(kelvin) && !isNaN(fahrenheit)) {
+				temperatureCelsius.value = (fahrenheit - 32) / 1.8;
+				temperatureKelvin.value = (fahrenheit - 32) / 1.8 + 273.15;
+			} else {
+				alert("Please only fill out one temperature!")
+			}
+		}
+
+		function clearTemperature() {
+			document.querySelectorAll(".temperature input").forEach(elem => elem.value = "")
+		}
 	</script>
 </body>
 </html>
