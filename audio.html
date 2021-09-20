@@ -15,12 +15,17 @@
 <body>
     <h1>Audio</h1>
     <audio src="audio.mp3"></audio>
-    <button class="mic">Use Microphone</button>
-    <button class="useFile">Use Audio File</button>
+    <div id="buttons">
+        <button id="startMicButton" onclick="startMic();">Start Microphone</button>
+        <button id="stopMicButton" onclick="stopMic();" disabled>Stop Microphone</button>
+        <button id="startFileButton" onclick="startFile();">Start Audio File</button>
+        <button id="stopFileButton" onclick="stopFile();" disabled>Stop Audio File</button>
+    </div>
     <div class="output"></div>
     <script>
 
-        let context, analyser
+        let context, analyser, source
+        let isplaying = false;
         const databuffer = new Float32Array(1024)
 
         function setUpAudioContext() {
@@ -29,41 +34,93 @@
             analyser.ftSize = 1024
         }
 
-        const micButton = document.querySelector(".mic")
-        micButton.addEventListener("click", useMic)
+        // Use microphone
 
-        async function useMic() {
+        async function startMic() {
             setUpAudioContext()
+
+            document.querySelector("#startMicButton").disabled = true
+            document.querySelector("#stopMicButton").disabled = false
+            document.querySelector("#startFileButton").disabled = true
+            document.querySelector("#stopFileButton").disabled = true
+
             const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-            const source = context.createMediaStreamSource(micStream);
+            source = context.createMediaStreamSource(micStream);
             const gainNode = new GainNode(context, { gain: 10 })
             source.connect(gainNode)
             gainNode.connect(analyser)
-            show()
+
+            isplaying = true;
+            updateFrame()
         }
 
-        const audioButton = document.querySelector(".useFile")
-        audioButton.addEventListener("click", useAudio)
+        function stopMic() {
+            isplaying = false;
+            source.disconnect();
 
-        function useAudio() {
+            document.querySelector("#startMicButton").disabled = false
+            document.querySelector("#stopMicButton").disabled = true
+            document.querySelector("#startFileButton").disabled = false
+            document.querySelector("#stopFileButton").disabled = true
+
+            clearFrame();
+        }
+
+        // Use file
+
+        function startFile() {
             setUpAudioContext()
+
+            document.querySelector("#startMicButton").disabled = true
+            document.querySelector("#stopMicButton").disabled = true
+            document.querySelector("#startFileButton").disabled = true
+            document.querySelector("#stopFileButton").disabled = false
+
             const myAudio = document.querySelector('audio');
             myAudio.play()
-            const source = context.createMediaElementSource(myAudio);
+            source = context.createMediaElementSource(myAudio);
             source.connect(analyser)
             analyser.connect(context.destination)
             myAudio.currentTime = 37;
-            show()
+
+            isplaying = true;
+            updateFrame()
         }
 
-        function show() {
-            analyser.getFloatTimeDomainData(databuffer)
-            document.querySelector(".output").textContent = databuffer.slice(0, 10).join(", ");
-            
-            // console.log(databuffer)
+        function stopFile() {
+            isplaying = false;
 
+            source.disconnect();
+            const myAudio = document.querySelector('audio');
+            myAudio.pause();
+            myAudio.currentTime = 0;
 
-            requestAnimationFrame(show)
+            document.querySelector("#startMicButton").disabled = false
+            document.querySelector("#stopMicButton").disabled = true
+            document.querySelector("#startFileButton").disabled = false
+            document.querySelector("#stopFileButton").disabled = true
+
+            clearFrame();
+        }
+
+        // Update frame
+
+        function updateFrame() {
+            if (isplaying) {
+                analyser.getFloatTimeDomainData(databuffer)
+
+                data = databuffer.slice(0, 10);
+                text = data.join(", ");
+                console.log(text);
+                document.querySelector(".output").textContent = text;
+
+                requestAnimationFrame(updateFrame);
+            }
+        }
+        
+        function clearFrame() {
+            console.log("clearframe")
+            document.querySelector(".output").textContent = "0, 0, 0, 0, 0, 0, 0, 0, 0";
         }
 
     </script>
