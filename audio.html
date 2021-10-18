@@ -105,22 +105,24 @@
 
         // Update frame
 
+        function showData(data) {
+            console.log(Math.max(...data));
+            document.querySelector(".output").textContent = data.join(", ");
+        }
+
         function updateFrame() {
             if (isplaying) {
                 analyser.getFloatTimeDomainData(databuffer)
 
                 data = databuffer.slice(0, 10);
-                text = data.join(", ");
-                console.log(text);
-                document.querySelector(".output").textContent = text;
+                showData(data);
 
                 requestAnimationFrame(updateFrame);
             }
         }
-        
+
         function clearFrame() {
-            console.log("clearframe")
-            document.querySelector(".output").textContent = "0, 0, 0, 0, 0, 0, 0, 0, 0";
+            showData([0,0,0,0,0,0,0,0,0,0]);
         }
 
     </script>
