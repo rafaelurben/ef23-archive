@@ -17,7 +17,8 @@
 </head>
 
 <body>
-    <h1>Audio</h1>
+    <h1>Audio experiment</h1>
+
     <audio src="audio/example1.mp3"></audio>
     <div id="buttons">
         <button id="startMicButton" onclick="startMic();">Start Microphone</button>
@@ -30,6 +31,10 @@
 
         </svg>
     </div>
+
+
+
+    <!-- The magic begins here -->
     <script>
 
         // Setup
@@ -44,8 +49,22 @@
             analyser = context.createAnalyser()
             analyser.ftSize = 1024
         }
+        
+        // Utils
 
-        // Use microphone (triggered by botton)
+        function stopAudio() {
+            isplaying = false;
+            source.disconnect();
+
+            document.querySelector("#startMicButton").disabled = false
+            document.querySelector("#stopMicButton").disabled = true
+            document.querySelector("#startFileButton").disabled = false
+            document.querySelector("#stopFileButton").disabled = true
+
+            clearFrame();
+        }
+
+        // Button actions
 
         async function startMic() {
             setUpAudioContext()
@@ -58,8 +77,9 @@
             const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
             source = context.createMediaStreamSource(micStream);
 
-            // TODO: Add slider to change gain
-            const gainNode = new GainNode(context, { gain: 10 })
+            // Amplify the input volume
+            const gainNode = new GainNode(context, { gain: 2 })
+            console.log(gainNode)
             source.connect(gainNode)
             gainNode.connect(analyser)
 
@@ -67,21 +87,9 @@
             updateFrame()
         }
 
-        // Stop using the microphone (triggered by botton)
-
         function stopMic() {
-            isplaying = false;
-            source.disconnect();
-
-            document.querySelector("#startMicButton").disabled = false
-            document.querySelector("#stopMicButton").disabled = true
-            document.querySelector("#startFileButton").disabled = false
-            document.querySelector("#stopFileButton").disabled = true
-
-            clearFrame();
+            stopAudio();
         }
-
-        // Use file (triggered by botton)
 
         function startFile() {
             setUpAudioContext()
@@ -102,48 +110,44 @@
             updateFrame()
         }
 
-        // Stop using the file (triggered by botton)
-
         function stopFile() {
-            isplaying = false;
+            stopAudio();
 
-            source.disconnect();
             const myAudio = document.querySelector('audio');
             myAudio.pause();
             myAudio.currentTime = 0;
-
-            document.querySelector("#startMicButton").disabled = false
-            document.querySelector("#stopMicButton").disabled = true
-            document.querySelector("#startFileButton").disabled = false
-            document.querySelector("#stopFileButton").disabled = true
-
-            clearFrame();
         }
 
-        // Update frame
+        // Visualization
+
+        // The smoothing factor is used to make the visible volume go back a little bit slower when the volume suddenly decreases.
+        let smoothing_factor = 0.9;
+
+        // The value from the latest function call. (used for smoothing)
+        let latest_value = 0;
 
         function showData(data) {
             outputelem.innerHTML = "";
 
             let sum = 0;
             data.forEach(d => sum += d);
+            latest_value = Math.max(sum, latest_value*smoothing_factor)
             
-            for (let i = 0; i < sum*10; i++) {
+            for (let i = 0; i < Math.min(latest_value*8, 90); i++) {
                 let circle = document.createElement("circle");
 
-                let red = 0;
-                let green = 0;
-                let blue = 0;
-
-                circle.setAttribute("fill", `rgb(${red},${green},${blue})`)
+                circle.setAttribute("fill", `hsl(${Math.max(130-(i*3), 0)},100%,35%)`)
                 circle.setAttribute("r", 5)
                 circle.setAttribute("cx", 11*(i) + 5)
                 circle.setAttribute("cy", 5)
                 outputelem.appendChild(circle);
             }
 
+            // Without this line, JS doesn't rerender the SVG. I don't know why neither understand why this line changes anything.
+            outputelem.innerHTML += "";
+
             // Debug
-            outputelem.innerHTML += `<p><br>${data.join("<br>")}<br><br>${Math.max(...data)}<br>${sum}<p>`;
+            // outputelem.innerHTML += `<p><br>${data.join("<br>")}<br><br>${Math.max(...data)}<br>${sum}<p>`;
         }
 
         function updateFrame() {
@@ -159,7 +163,8 @@
         }
 
         function clearFrame() {
-            showData([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            outputelem.innerHTML = "";
+            latest_value = 0;
         }
 
     </script>
