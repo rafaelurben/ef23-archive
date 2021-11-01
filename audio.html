@@ -9,6 +9,10 @@
         html {
             background-color: #444;
         }
+
+        #buttons {
+            margin-bottom: 16px;
+        }
     </style>
 </head>
 
@@ -21,12 +25,19 @@
         <button id="startFileButton" onclick="startFile();">Start Audio File</button>
         <button id="stopFileButton" onclick="stopFile();" disabled>Stop Audio File</button>
     </div>
-    <div class="output"></div>
+    <div id="output-container">
+        <svg id="output" viewBox="0 0 1000 10" xmlns="http://www.w3.org/2000/svg">
+
+        </svg>
+    </div>
     <script>
+
+        // Setup
 
         let context, analyser, source
         let isplaying = false;
         const databuffer = new Float32Array(1024)
+        const outputelem = document.querySelector("#output")
 
         function setUpAudioContext() {
             context = new AudioContext();
@@ -34,7 +45,7 @@
             analyser.ftSize = 1024
         }
 
-        // Use microphone
+        // Use microphone (triggered by botton)
 
         async function startMic() {
             setUpAudioContext()
@@ -46,6 +57,8 @@
 
             const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
             source = context.createMediaStreamSource(micStream);
+
+            // TODO: Add slider to change gain
             const gainNode = new GainNode(context, { gain: 10 })
             source.connect(gainNode)
             gainNode.connect(analyser)
@@ -53,6 +66,8 @@
             isplaying = true;
             updateFrame()
         }
+
+        // Stop using the microphone (triggered by botton)
 
         function stopMic() {
             isplaying = false;
@@ -66,7 +81,7 @@
             clearFrame();
         }
 
-        // Use file
+        // Use file (triggered by botton)
 
         function startFile() {
             setUpAudioContext()
@@ -87,6 +102,8 @@
             updateFrame()
         }
 
+        // Stop using the file (triggered by botton)
+
         function stopFile() {
             isplaying = false;
 
@@ -106,23 +123,43 @@
         // Update frame
 
         function showData(data) {
-            console.log(Math.max(...data));
-            document.querySelector(".output").textContent = data.join(", ");
+            outputelem.innerHTML = "";
+
+            let sum = 0;
+            data.forEach(d => sum += d);
+            
+            for (let i = 0; i < sum*10; i++) {
+                let circle = document.createElement("circle");
+
+                let red = 0;
+                let green = 0;
+                let blue = 0;
+
+                circle.setAttribute("fill", `rgb(${red},${green},${blue})`)
+                circle.setAttribute("r", 5)
+                circle.setAttribute("cx", 11*(i) + 5)
+                circle.setAttribute("cy", 5)
+                outputelem.appendChild(circle);
+            }
+
+            // Debug
+            outputelem.innerHTML += `<p><br>${data.join("<br>")}<br><br>${Math.max(...data)}<br>${sum}<p>`;
         }
 
         function updateFrame() {
             if (isplaying) {
                 analyser.getFloatTimeDomainData(databuffer)
-
                 data = databuffer.slice(0, 10);
+
                 showData(data);
 
+                // Let JS know that we want to run this function when the next frame is rendered
                 requestAnimationFrame(updateFrame);
             }
         }
 
         function clearFrame() {
-            showData([0,0,0,0,0,0,0,0,0,0]);
+            showData([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
         }
 
     </script>
