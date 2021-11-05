@@ -1,16 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<title>Javascript</title>
-	<link rel="stylesheet" href="https://gymburgdorf-ef23.github.io/helpers/basicstyle.css"></link>
+	<link rel="stylesheet" href="https://gymburgdorf-ef23.github.io/helpers/basicstyle.css">
+	</link>
 	<style>
-		input, button, .output {padding: 0.4em; border-radius: 5px; font-family: monospace; margin: 0.5em 0; font-size: 1.4em;}
-		input {background-color: #bbe; }
-		.output {background-color: #ada;}
+		input,
+		button,
+		.output {
+			padding: 0.4em;
+			border-radius: 5px;
+			font-family: monospace;
+			margin: 0.5em 0;
+			font-size: 1.4em;
+		}
+
+		input {
+			background-color: #bbe;
+		}
+
+		.output {
+			background-color: #ada;
+		}
 	</style>
-	<script src="43_functions.js"></script>
+	<script src="./43_functions.js"></script>
 </head>
+
 <body>
 	<h1>Javascript - DOM Manipulation</h1>
 
@@ -29,7 +46,7 @@
 		<div>
 			<input class="a" placeholder="a" type="number" size="10"> x^2 +
 			<input class="b" placeholder="b" type="number" size="10"> x +
-			<input class="c" placeholder="c" type="number" size="10"> =
+			<input class="c" placeholder="c" type="number" size="10"> = 0
 			<div class="output">&nbsp;</div>
 			<button>Solve</button>
 		</div>
@@ -73,7 +90,7 @@
 			const a = Number(document.querySelector(".quadratic input.a").value)
 			const b = Number(document.querySelector(".quadratic input.b").value)
 			const c = Number(document.querySelector(".quadratic input.c").value)
-			const solution = solveQuadratic(a,b,c)
+			const solution = solveQuadratic(a, b, c)
 			quadraticOutput.textContent = solution.toString()
 		}
 
@@ -112,4 +129,5 @@
 		}
 	</script>
 </body>
+
 </html>
