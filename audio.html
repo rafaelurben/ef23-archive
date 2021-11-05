@@ -3,35 +3,37 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Audio</title>
-    <link rel="stylesheet" href="https://gymburgdorf-ef23.github.io/helpers/basicstyle.css">
-    <style>
-        html {
-            background-color: #444;
-        }
-
-        #buttons {
-            margin-bottom: 16px;
-        }
-    </style>
+    <title>Audio experiments</title>
+    <link rel="stylesheet" href="./audio.css">
 </head>
 
 <body>
     <h1>Audio experiment</h1>
 
+    <p>This is just a little experiment :)</p>
+
     <audio src="audio/example1.mp3"></audio>
-    <div id="buttons">
-        <button id="startMicButton" onclick="startMic();">Start Microphone</button>
-        <button id="stopMicButton" onclick="stopMic();" disabled>Stop Microphone</button>
-        <button id="startFileButton" onclick="startFile();">Start Audio File</button>
-        <button id="stopFileButton" onclick="stopFile();" disabled>Stop Audio File</button>
-    </div>
-    <div id="output-container">
-        <svg id="output" viewBox="0 0 1000 10" xmlns="http://www.w3.org/2000/svg">
+
+    <fieldset id="controls-container" class="borderbox flex">
+        <legend>Controls</legend>
+        <fieldset class="borderbox flex flex40">
+            <legend>Microphone</legend>
+            <button id="startMicButton" class="flex40" onclick="startMic();">Activate Microphone</button>
+            <button id="stopMicButton" class="flex40" onclick="stopMic();" disabled>Stop Microphone</button>
+        </fieldset>
+        <fieldset class="borderbox flex flex40">
+            <legend>Audio file</legend>
+            <button id="startFileButton" class="flex40" onclick="startFile();">Start Audio File</button>
+            <button id="stopFileButton" class="flex40" onclick="stopFile();" disabled>Stop Audio File</button>
+        </fieldset>
+    </fieldset>
+    
+    <fieldset id="output-container" class="borderbox">
+        <legend>Output</legend>
+        <svg id="svg-volume" viewBox="0 0 1000 10" xmlns="http://www.w3.org/2000/svg">
 
         </svg>
-    </div>
-
+    </fieldset>
 
 
     <!-- The magic begins here -->
@@ -42,7 +44,7 @@
         let context, analyser, source
         let isplaying = false;
         const databuffer = new Float32Array(1024)
-        const outputelem = document.querySelector("#output")
+        const svg_volume_elem = document.querySelector("#svg-volume")
 
         function setUpAudioContext() {
             context = new AudioContext();
@@ -52,14 +54,18 @@
         
         // Utils
 
+        function setButtonStates(states) {
+            // Input: [[id, state], [id, state], ...]
+            states.forEach(state => {
+                document.querySelector(`#${state[0]}`).disabled = !state[1];
+            })
+        }
+
         function stopAudio() {
             isplaying = false;
             source.disconnect();
 
-            document.querySelector("#startMicButton").disabled = false
-            document.querySelector("#stopMicButton").disabled = true
-            document.querySelector("#startFileButton").disabled = false
-            document.querySelector("#stopFileButton").disabled = true
+            setButtonStates([["startMicButton", true], ["stopMicButton", false], ["startFileButton", true], ["stopFileButton", false]])
 
             clearFrame();
         }
@@ -69,10 +75,7 @@
         async function startMic() {
             setUpAudioContext()
 
-            document.querySelector("#startMicButton").disabled = true
-            document.querySelector("#stopMicButton").disabled = false
-            document.querySelector("#startFileButton").disabled = true
-            document.querySelector("#stopFileButton").disabled = true
+            setButtonStates([["startMicButton", false], ["stopMicButton", true], ["startFileButton", false], ["stopFileButton", false]])
 
             const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
             source = context.createMediaStreamSource(micStream);
@@ -94,10 +97,7 @@
         function startFile() {
             setUpAudioContext()
 
-            document.querySelector("#startMicButton").disabled = true
-            document.querySelector("#stopMicButton").disabled = true
-            document.querySelector("#startFileButton").disabled = true
-            document.querySelector("#stopFileButton").disabled = false
+            setButtonStates([["startMicButton", false], ["stopMicButton", false], ["startFileButton", false], ["stopFileButton", true]])
 
             const myAudio = document.querySelector('audio');
             myAudio.play()
@@ -127,7 +127,7 @@
         let latest_value = 0;
 
         function showData(data) {
-            outputelem.innerHTML = "";
+            svg_volume_elem.innerHTML = "";
 
             let sum = 0;
             data.forEach(d => sum += d);
@@ -140,11 +140,11 @@
                 circle.setAttribute("r", 5)
                 circle.setAttribute("cx", 11*(i) + 5)
                 circle.setAttribute("cy", 5)
-                outputelem.appendChild(circle);
+                svg_volume_elem.appendChild(circle);
             }
 
             // Without this line, JS doesn't rerender the SVG. I don't know why neither understand why this line changes anything.
-            outputelem.innerHTML += "";
+            svg_volume_elem.innerHTML += "";
 
             // Debug
             // outputelem.innerHTML += `<p><br>${data.join("<br>")}<br><br>${Math.max(...data)}<br>${sum}<p>`;
@@ -163,17 +163,20 @@
         }
 
         function clearFrame() {
-            outputelem.innerHTML = "";
+            svg_volume_elem.innerHTML = "";
             latest_value = 0;
         }
 
+
+        window.onload = function() {
+            setButtonStates([["startMicButton", true], ["stopMicButton", false], ["startFileButton", true], ["stopFileButton", false]])
+        }
+
         // TODO:
-        // Replace buttons with icons and group controls by mic/file
-        // -> mic/stop icon / play/stop icon
-        // Add own stylesheet
+        // Replace buttons with icons -> mic/stop icon / play/stop icon
         // Add slider for smoothing factor
         // Add slider for microphone gain
-        // Add decoration around circles
+        // Add decoration around circles or use another shape
         // Add option to change audio -> add skip/previous
 
     </script>
