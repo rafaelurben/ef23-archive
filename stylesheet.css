@@ -1,6 +1,6 @@
-/* Stylesheet for audio.html */
+/* Stylesheet */
 
-button {
+button, a.btn {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
