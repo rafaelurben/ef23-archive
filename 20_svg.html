@@ -34,18 +34,38 @@
 	<object class="example_large" type="image/svg+xml" data="https://gymburgdorf-ef23.github.io/helpers/img/svg/map.svg" aria-label="map"></object>
 	<object class="example_large" type="image/svg+xml" data="https://gymburgdorf-ef23.github.io/helpers/img/svg/chart.svg" aria-label="chart"></object>
 
+	<h3>Info</h3>
+	<p>
+		SVG ist ein XML-Dokument, das eine Liste von Figuren enthält. Jede Figur hat einen Namen und eine Liste von Attributen.
+		<a href="https://www.w3schools.com/graphics/svg_reference.asp">Komplette Referenz</a>
+	</p>
+
 	<h3>Die Bühne für eine SVG Grafik</h3>
 	<div>SVG verwendet wie HTML öffnende und schliessende Tags.</div>
 	<code>
-		&lt;svg viewBox='0 0 300 200'&gt;<br>
-		&nbsp;&nbsp;&lt;!--Hier folgen die Elemente--&gt;<br>
-		&lt;/svg&gt;
+	&lt;svg viewBox='0 0 300 200'&gt;<br>
+	&nbsp;&nbsp;&lt;!--Hier folgen die Elemente--&gt;<br>
+	&lt;/svg&gt;
 	</code>
 	<p>
 		<img class="rightimg" src="https://gymburgdorf-ef23.github.io/helpers/img/svg/screen_coordinates.png" alt="/img/svg/screen_coordinates.png" class="svelte-e0fb2n">
 		Das Attribut Viewport legt die linke obere Ecke fest (hier 0|0) sowie die Breite (hier 300) und Höhe (hier 200) der Grafik.
-		<br>Zu beachten: Die y-Achse des Koordinaten-systems zeigt nach unten (s. Bild rechts).
+		<br>Zu beachten: Die y-Achse des Koordinaten-systems zeigt nach unten (s. Bild rechts).<br>
+		<br>Generelle Attribute für die meisten Elemente in einem SVG:
+		<ul>
+			<li><dfn>fill="..."</dfn></li>
+			<li><dfn>stroke="..."</dfn></li>
+			<li><dfn>transform="..."</dfn></li>
+			<li><dfn>opacity="..."</dfn></li>
+		</ul>
+		Mögliche Farbwerte: <dfn>color</dfn>, <dfn>rgb(R,G,B)</dfn>, <dfn>rgba(R,G,B,A)</dfn>, <dfn>#RRGGBB</dfn>, <dfn>#RRGGBBAA</dfn>, <dfn>hsl(H,S,L)</dfn>, <dfn>hsla(H,S,L,A)</dfn>
 	</p>
+
+	<h3>Text: <dfn>text</dfn></h3>
+	<p>Dieses Element kann verwendet werden, um Text in einem SVG anzuzeigen.</p>
+
+	<h3>Gruppe: <dfn>g</dfn></h3>
+	<p>Dieses Element kann verwendet werden, um Objekte zu gruppieren.</p>
 
 	<h3>Kreise: <dfn>circle</dfn></h3>
 	<p>Statt jeden Pixel eines Kreises kann man einfach den Radius <dfn>r="..."</dfn> sowie
@@ -66,6 +86,13 @@
 	<h3>Rechtecke: <dfn>rect</dfn></h3>
 	<p>Sehen Sie sich das Beispiel an und
 	erstellen Sie dann aus dem Bild die Flagge Thailands.</p>
+	<ul>
+		<li><dfn>x="..."</dfn>: Startposition (x)</li>
+		<li><dfn>y="..."</dfn>: Startposition (y)</li>
+		<li><dfn>width="..."</dfn>: Breite (x)</li>
+		<li><dfn>height="..."</dfn>: Höhe (y)</li>
+	</ul>
+	<br>
 	<svg viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" >
 		<rect x="0" y="0" width="900" height="100" fill="rgb(220,0,0)"></rect>
 		<rect x="0" y="100" width="900" height="100" fill="rgb(255,255,255)"></rect>
