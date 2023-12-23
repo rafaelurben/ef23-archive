@@ -1,0 +1,82 @@
+/* Stylesheet */
+
+a[href] {
+    color: white;
+}
+
+a[href]:hover {
+    color: #afafaf;
+}
+
+input, button, a.btn, select {
+    cursor: pointer
+}
+
+button, a.btn {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+button, a.btn, select {
+    transition-duration: 0.3s;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border: none;
+    border-radius: 3px;
+    min-width: 11em;
+}
+
+body {
+    padding: 1em;
+    max-width: 1000px;
+    margin: auto;
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+    color: white;
+}
+
+html {
+    background-color: rgb(55, 55, 55);
+}
+
+fieldset.borderbox {
+    border-radius: 5px;
+}
+
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex40 {
+    flex: 40%;
+}
+
+.flex100 {
+    flex: 100%;
+}
+
+.m05 {
+    margin: 0.5em;
+}
+
+#controls-container {
+    padding: 0 0.5em 0.5em 0.5em;
+    margin-bottom: 1em;
+}
+
+#svg-volume {
+    width: 100%;
+}
+
+legend abbr {
+    padding: 0 0.5em 0 0.25em;
+    transition-duration: 0.3s;
+}
+
+legend abbr:hover {
+    cursor: help;
+    color: rgb(199, 199, 199);
+}
